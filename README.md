@@ -1,5 +1,6 @@
 # KChat backend
 
+Frontend available here: https://github.com/avatsaev/kchat_frontend
 
 ## Usage
 
