@@ -1,0 +1,16 @@
+{
+  "name": "kawachat-backend",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http": "0.0.0",
+    "lodash": "^4.14.1",
+    "socketio": "^1.0.0"
+  }
+}
