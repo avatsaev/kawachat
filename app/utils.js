@@ -3,7 +3,7 @@ module.exports = {
 
   escape_html: function(text) {
 
-    if(text==undefined){
+    if(!text){
       return;
     }
 

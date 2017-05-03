@@ -20,7 +20,7 @@ const Room = require("./room");
 //get room by frequency
 chat.get_room = (frq) => {
   return _.find(chat.rooms, (r) => {
-    return r.frq == frq;
+    return r.frq === frq;
   });
 };
 
@@ -29,7 +29,7 @@ chat.add_room = (frq) => {
 
   let room = chat.get_room(frq);
 
-  if(room == undefined){
+  if(!room){
     room = new Room(frq);
     chat.rooms.push(room);
   }
@@ -40,7 +40,7 @@ chat.add_room = (frq) => {
 
 chat.remove_room = (frq) => {
   _.remove(chat.rooms, (r) => {
-    return r.frq == frq;
+    return r.frq === frq;
   });
 };
 
@@ -48,7 +48,7 @@ chat.remove_room = (frq) => {
 //get user by socket id
 chat.get_user = (client_id) => {
   return _.find(chat.users, u => {
-    return u.client_id == client_id;
+    return u.client_id === client_id;
   });
 };
 
@@ -57,11 +57,11 @@ chat.add_user = (data) => {
 
   let user_data = data;
 
-  if (user_data["username"]==undefined || user_data["username"]=="") {
+  if (!user_data["username"] || !user_data["username"]) {
     user_data.username="User_"+Math.floor(Math.random()*110000);
   }
 
-  if (user_data["frq"]==undefined || user_data["frq"]=="") {
+  if (!user_data["frq"] || !user_data["frq"]) {
     user_data.frq="1";
   }
 
@@ -78,35 +78,35 @@ chat.add_user = (data) => {
 
 chat.remove_user = (client_id) => {
   _.remove(chat.users, (u) => {
-    return u.client_id == client_id;
+    return u.client_id === client_id;
   });
-}
+};
 
 //check if there is a username on a frequency
 chat.username_exists = (username, frq) =>{
   return _.filter(chat.users, (u) =>{
-    return u.username == username && u.frq == frq;
+    return u.username === username && u.frq === frq;
   }).length;
-}
+};
 
 
 //broadcast to all frequencies
 chat.broadcast = (msg) => {
   chat.socket.sockets.emit("update", msg);
-}
+};
 
 
 chat.status = () => {
   console.log("User count: ", chat.users.length);
   console.log("Room count: ", chat.rooms.length);
-}
+};
 
 
 chat.as_json = () => {
 
   let json_data = {
     rooms: []
-  }
+  };
 
   _.forEach(chat.rooms, (r) =>{
     json_data.rooms.push(r.as_json());
@@ -114,6 +114,6 @@ chat.as_json = () => {
 
   return json_data;
 
-}
+};
 
 module.exports = chat;

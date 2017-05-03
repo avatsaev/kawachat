@@ -15,7 +15,7 @@ class Room {
   //users of the room
   people(){
     return _.filter(chat.users, (u) => {
-      return u.frq == this.frq
+      return u.frq === this.frq
     });
   }
 
@@ -29,9 +29,9 @@ class Room {
 
     console.log(`${sender.username} [${sender.frq}]: ${msg} `);
 
-    _.forEach(this.people(), (u) =>{
+    _.forEach(this.people(), (u) => {
 
-      if (u.client_id != sender.client_id){
+      if (u.client_id !== sender.client_id){
         u.socket.emit("chat", {msg, sender: sender.username});
       }
 
@@ -42,7 +42,7 @@ class Room {
     let json_data = {
       frq: this.frq,
       users: []
-    }
+    };
 
     _.forEach(this.people(), (u) =>{
       json_data.users.push(u.as_json());

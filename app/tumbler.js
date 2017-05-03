@@ -5,30 +5,28 @@ let chat  = require("./chat");
 function tumbler(frq, event, params){
 
   let room;
-  let users;
 
   if(frq){
     room = chat.get_room(frq);
-    users = room.people();
   }
 
 
-  if(event=="update"){
+  if(event==="update"){
     room.system_msg(params.msg);
   }
 
-  if(event=="chat"){
+  if(event==="chat"){
     room.send_msg(params.msg, params.usr);
   }
 
-  if(event=="broadcast"){
+  if(event==="broadcast"){
     chat.broadcast(msg);
   }
 
-  if (event=="error"){
+  if (event==="error"){
     params.client.emit("err", {errno: params.errno, msg: params.msg})
   }
 
 }
 
-module.exports = tumbler
+module.exports = tumbler;

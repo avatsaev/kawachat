@@ -14,7 +14,7 @@ class User {
   get_room(){
     // console.log("getting room with frq ", this.frq);
     // console.log("from ", chat.rooms);
-    return  _.find(chat.rooms, (r) => { return r.frq == this.frq });
+    return  _.find(chat.rooms, (r) => { return r.frq === this.frq });
   }
 
   as_json(){
@@ -28,4 +28,4 @@ class User {
 
 }
 
-module.exports = User
+module.exports = User;

@@ -12,9 +12,9 @@ const tumbler = require("./app/tumbler");
 
 
 // Send index.html to all requests
-var app = http.createServer(function(req, res) {
+let app = http.createServer(function(req, res) {
 
-  if(req.url == "/stats.json"){
+  if(req.url === "/stats.json"){
     res.writeHead(200, {'Content-Type': 'application/json'});
     const response = chat.as_json();
     res.end(JSON.stringify(response));
@@ -27,8 +27,8 @@ var app = http.createServer(function(req, res) {
 
 
 // Socket.io server listens to our app
-var socket = require('socket.io').listen(app);
-socket.set( 'origins','*:*')
+let socket = require('socket.io').listen(app);
+socket.set( 'origins','*:*');
 
 //set main socket
 chat.socket = socket;
@@ -60,7 +60,7 @@ socket.on("connection", function (client) {
 
   client.on("send", function(data){
 
-    if(data["msg"]==undefined || data["msg"]=="" || data["frq"]==undefined || data["frq"]=="") return;
+    if(!data["msg"] || data["msg"]==="" || !data["frq"] || data["frq"]==="") return;
 
     //sanitize data
     data["frq"]= utils.escape_html(data["frq"]).substring(0, 32);
@@ -90,7 +90,7 @@ socket.on("connection", function (client) {
       chat.remove_user(user.client_id);
 
       //if there is no more users left in the room, destroy it.
-      if(room.people_count() == 0){
+      if(room.people_count() === 0){
         chat.remove_room(room.frq);
       }
 
