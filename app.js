@@ -2,13 +2,15 @@
 
 const port = process.env.PORT || 3002;
 const env = process.env.NODE_ENV || "development";
+const redis_host = process.env.REDIS_HOST || "localhost";
+const redis_port = process.env.REDIS_PORT || 6379;
 
 const http = require('http');
 const _ = require("lodash");
+const os = require("os");
 
 let chat  = require("./app/chat");
 const utils = require("./app/utils");
-const tumbler = require("./app/tumbler");
 
 
 // Send index.html to all requests
@@ -27,7 +29,12 @@ let app = http.createServer(function(req, res) {
 
 
 // Socket.io server listens to our app
+
 let socket = require('socket.io').listen(app);
+let redis = require('socket.io-redis');
+
+socket.adapter(redis({ host: redis_host, port: redis_port }));
+
 socket.set( 'origins','*:*');
 
 //set main socket
@@ -39,22 +46,12 @@ socket.on("connection", function (client) {
 
   client.on("join", function(data){
 
-    //send an error to front if user with the same username already exists on the frequency
-    if(chat.username_exists(data.username, data.frq)){
-      tumbler(null, "error", {client: client, errno: "EUSREXISTS", msg: "Username is taken"});
-      return;
-    }
+    client.join(data.frq);
+    socket.emit('update', (data.username+" has joined the server on the frequency "+data.frq) );
+    socket.emit('host', os.hostname());
 
-    //assign a socket to the user
     data.socket = client;
-
-    let user = chat.add_user(data);
-    let room = chat.add_room(user.frq);
-
-    //announce new user connection to all clients in the room
-    tumbler(user.frq, "update", {msg: (user.username+" has joined the server on the frequency "+user.frq) });
-
-    console.log(`User ${user.username} connected on frequency ${user.frq}`);
+    chat.add_user(data);
 
   });
 
@@ -65,11 +62,9 @@ socket.on("connection", function (client) {
     //sanitize data
     data["frq"]= utils.escape_html(data["frq"]).substring(0, 32);
     data["msg"]= utils.escape_html(data["msg"]).substring(0, 512);
-    data["usr"]= utils.escape_html(data["usr"]).substring(0, 64);
+    data["sender"]= utils.escape_html(data["usr"]).substring(0, 64);
 
-    let user = chat.get_user(client.id);
-
-    tumbler(data["frq"], "chat",  {msg: data["msg"], usr: user });
+    socket.to(data.frq).emit('chat', data);
 
   });
 
@@ -77,30 +72,12 @@ socket.on("connection", function (client) {
 
     let user = chat.get_user(client.id);
 
-    if(user){
-
-      console.log("User disconecting from frequency: ", user.frq);
-
-      let room = user.get_room();
-
-      tumbler(user.frq, "update", {
-        msg: (`${user.username} left the frequency ${user.frq}`)
-      });
-
-      chat.remove_user(user.client_id);
-
-      //if there is no more users left in the room, destroy it.
-      if(room.people_count() === 0){
-        chat.remove_room(room.frq);
-      }
-
-      chat.status();
-    }
+    socket.to(user.frq).emit('update', (user.username+" left the frequency "+user.frq) );
+    chat.remove_user(client.id);
 
   });
 
 });
-
 
 console.log("---------- server running on port "+port+" -----------------")
 app.listen(port);

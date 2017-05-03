@@ -6,7 +6,6 @@ const _ = require("lodash");
 let chat = {
   socket: null,
   users: [],
-  rooms: [],
   current_state: 0,
 };
 
@@ -15,35 +14,6 @@ module.exports = chat;
 
 const utils = require("./utils");
 const User = require("./user");
-const Room = require("./room");
-
-//get room by frequency
-chat.get_room = (frq) => {
-  return _.find(chat.rooms, (r) => {
-    return r.frq === frq;
-  });
-};
-
-//add new room if doesn't exist
-chat.add_room = (frq) => {
-
-  let room = chat.get_room(frq);
-
-  if(!room){
-    room = new Room(frq);
-    chat.rooms.push(room);
-  }
-
-  return room;
-
-};
-
-chat.remove_room = (frq) => {
-  _.remove(chat.rooms, (r) => {
-    return r.frq === frq;
-  });
-};
-
 
 //get user by socket id
 chat.get_user = (client_id) => {
@@ -51,7 +21,6 @@ chat.get_user = (client_id) => {
     return u.client_id === client_id;
   });
 };
-
 
 chat.add_user = (data) => {
 
@@ -90,16 +59,7 @@ chat.username_exists = (username, frq) =>{
 };
 
 
-//broadcast to all frequencies
-chat.broadcast = (msg) => {
-  chat.socket.sockets.emit("update", msg);
-};
 
-
-chat.status = () => {
-  console.log("User count: ", chat.users.length);
-  console.log("Room count: ", chat.rooms.length);
-};
 
 
 chat.as_json = () => {
