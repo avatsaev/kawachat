@@ -14,8 +14,8 @@ const app = module.exports = express();
 const _ = require("lodash");
 const os = require("os");
 
-let chat  = require("./app/chat");
-const utils = require("./app/utils");
+let chat  = require("./models/chat");
+const utils = require("./models/utils");
 
 app.set('port', port);
 app.set('env', env);

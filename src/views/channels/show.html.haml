@@ -1,0 +1,21 @@
+
+.row.clearfix
+
+  .span2.clearfix
+    SERVER:
+    %b
+      %u
+        {{hostname}}
+
+  .span4.clearfix
+    %ul#msgs.clearfix
+
+#chat.span5.offset2.navbar.navbar-fixed-bottom
+  %form.clearfix
+    .form-group
+      %row
+        .col-xs-9.col-md-11
+          %input#msg.form-control{:placeholder => "Your message...", :type => "text", "ui-keypress"=>"{13:'send_msg($event)'}"}/
+
+        .col-xs-3.col-md-1
+          %input#send.btn.btn-success.form-control{:name => "send", :type => "button", :value => "Send", "ng-click" => "send_msg()"}
