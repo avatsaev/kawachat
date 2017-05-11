@@ -1,41 +1,69 @@
 "use strict";
 
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3003;
 const env = process.env.NODE_ENV || "development";
 const redis_host = process.env.REDIS_HOST || "localhost";
 const redis_port = process.env.REDIS_PORT || 6379;
 
-const http = require('http');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const redis = require('socket.io-redis');
+const app = module.exports = express();
 const _ = require("lodash");
 const os = require("os");
 
 let chat  = require("./app/chat");
 const utils = require("./app/utils");
 
+app.set('port', port);
+app.set('env', env);
 
-// Send index.html to all requests
-let app = http.createServer(function(req, res) {
-
-  if(req.url === "/stats.json"){
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    const response = chat.as_json();
-    res.end(JSON.stringify(response));
-  }else{
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.end("");
-  }
-
+const server = app.listen(app.get('port'), () => {
+  console.log('Kawachat server listening on port ' + app.get('port'));
 });
 
+const io_s = require('socket.io')(server);
+
+io_s.adapter(redis({
+  host: redis_host,
+  port: redis_port
+}));
+
+const socket = io_s.of('kawachat');
 
 // Socket.io server listens to our app
 
-let socket = require('socket.io').listen(app);
-let redis = require('socket.io-redis');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
-socket.adapter(redis({ host: redis_host, port: redis_port }));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
-socket.set( 'origins','*:*');
+app.use(express.static(path.join(__dirname, 'public')));
+
+if (app.get('env') === 'development') {
+  app.use((error, req, res, next) => {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error
+    });
+  });
+}
+
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.render('error', err);
+});
+
+app.get('/', (req, res) => {
+  res.render('index');
+});
 
 //set main socket
 chat.socket = socket;
@@ -78,6 +106,3 @@ socket.on("connection", function (client) {
   });
 
 });
-
-console.log("---------- server running on port "+port+" -----------------")
-app.listen(port);
