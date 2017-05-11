@@ -8,6 +8,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-haml2html'
   grunt.loadNpmTasks 'js-obfuscator'
+  grunt.loadNpmTasks 'grunt-contrib-clean'
 
 
   grunt.initConfig
@@ -104,6 +105,9 @@ module.exports = (grunt) ->
           spawn: false
           livereload: true
 
+    clean:
+        js: ['public/javascripts/*.js', '!public/javascripts/*.min.js'],
+        css: ['public/stylesheets/*.css', '!public/stylesheets/*.min.css']
 
     bower_concat:
 
@@ -127,6 +131,11 @@ module.exports = (grunt) ->
     'watch'
   ]
 
+  grunt.registerTask 'cleanup', [
+    'clean:js'
+    'clean:css'
+  ]
+
   grunt.registerTask 'assets', [
     'sass'
     'cssmin'
@@ -135,4 +144,10 @@ module.exports = (grunt) ->
     'bower_concat:all'
     'uglify:all'
     'jsObfuscate:all'
+  ]
+
+
+  grunt.registerTask 'build', [
+    'assets'
+    'cleanup'
   ]
