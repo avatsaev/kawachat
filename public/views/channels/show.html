@@ -1,27 +1,27 @@
 <div class='row clearfix'>
-  <div class='span2 clearfix'>
-    SERVER:
-    <b>
-      <u>
-        {{hostname}}
-      </u>
-    </b>
-  </div>
-  <div class='span4 clearfix'>
-    <ul class='clearfix' id='msgs'></ul>
-  </div>
+<div class='span2 clearfix'>
+SERVER:
+<b>
+<u>
+{{hostname}}
+</u>
+</b>
+</div>
+<div class='span4 clearfix'>
+<ul class='clearfix' id='msgs'></ul>
+</div>
 </div>
 <div class='span5 offset2 navbar navbar-fixed-bottom' id='chat'>
-  <form class='clearfix'>
-    <div class='form-group'>
-      <row>
-        <div class='col-xs-9 col-md-11'>
-          <input class='form-control' id='msg' placeholder='Your message...' type='text' ui-keypress="{13:'send_msg($event)'}">
-        </div>
-        <div class='col-xs-3 col-md-1'>
-          <input class='btn btn-success form-control' id='send' name='send' ng-click='send_msg()' type='button' value='Send'>
-        </div>
-      </row>
-    </div>
-  </form>
+<form class='clearfix'>
+<div class='form-group'>
+<row>
+<div class='col-xs-9 col-md-11'>
+<input class='form-control' id='msg' placeholder='Your message...' type='text' ui-keypress='{13:&#39;send_msg($event)&#39;}'>
+</div>
+<div class='col-xs-3 col-md-1'>
+<input class='btn btn-success form-control' id='send' name='send' ng-click='send_msg()' type='button' value='Send'>
+</div>
+</row>
+</div>
+</form>
 </div>

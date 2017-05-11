@@ -30,8 +30,6 @@ module.exports = (grunt) ->
 
     haml:
       all:
-        options:
-          style: 'expanded'
         files: [
           expand: true,
           cwd:'src/views'
