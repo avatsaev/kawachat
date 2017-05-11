@@ -6,3 +6,4 @@ npm-debug.log
 !.elasticbeanstalk/*.global.yml
 bower_components
 .idea
+.git

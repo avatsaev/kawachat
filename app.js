@@ -2,7 +2,7 @@
 
 const port = process.env.PORT || 3003;
 const env = process.env.NODE_ENV || "development";
-const redis_host = process.env.REDIS_HOST || "localhost";
+const redis_host = process.env.REDIS_HOST || "redis";
 const redis_port = process.env.REDIS_PORT || 6379;
 
 const express = require('express');
