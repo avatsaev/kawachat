@@ -1,22 +1,34 @@
-FROM node:7.10.0
+FROM node:7.10.0-alpine
 
-RUN mkdir -p /usr/src/app
+RUN mkdir -p /app
 
-WORKDIR /usr/src/app
-COPY package.json /usr/src/app/
-RUN npm install
-COPY . /usr/src/app
+WORKDIR /app
+COPY . /app
+
+COPY .gemrc ~/
 
 EXPOSE 3003
 
-RUN \
-  apt-get update && \
-  apt-get install -y ruby ruby-dev  && \
-  rm -rf /var/lib/apt/lists/*
+RUN apk update && apk upgrade && apk add --no-cache curl wget bash
 
-RUN npm install --global grunt bower
-RUN gem install haml sass
-RUN bower install --allow-root
-RUN grunt build
+# Install ruby and ruby-bundler
+RUN apk add --no-cache ruby ruby-bundler
+
+# Clean APK cache
+RUN rm -rf /var/cache/apk/*
+
+RUN gem install --no-rdoc --no-ri haml sass
+
+
+RUN npm install \
+ && npm install --global grunt bower \
+ && bower install --allow-root\
+ && grunt build \
+ && gem uninstall haml sass rdoc \
+ && npm remove -g grunt bower \
+ && npm cache clean \
+ && apk del curl wget bash ruby ruby-bundler  \
+ && rm -rf bower_components \
+ && rm -rf .sass-cache
 
 CMD [ "npm", "start" ]

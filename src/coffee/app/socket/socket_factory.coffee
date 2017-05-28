@@ -2,7 +2,7 @@ app.factory 'Socket', [
   '$rootScope'
   ($rootScope) ->
 
-    socket = io(document.location.origin + '/kawachat')
+    socket = io(document.location.origin + '/kawachat', {'transports': ['websocket', 'polling']})
 
     {
       on: (eventName, callback) ->

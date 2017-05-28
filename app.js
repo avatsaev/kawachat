@@ -26,6 +26,9 @@ const server = app.listen(app.get('port'), () => {
 
 const io_s = require('socket.io')(server);
 
+io_s.set({'transports': ['websocket', 'polling']});
+
+
 io_s.adapter(redis({
   host: redis_host,
   port: redis_port
@@ -76,8 +79,7 @@ socket.on("connection", function (client) {
 
     client.join(data.frq);
     socket.emit('update', (data.username+" has joined the server on the frequency "+data.frq) );
-    socket.emit('host', os.hostname());
-
+    client.emit('host', os.hostname());
     data.socket = client;
     chat.add_user(data);
 
@@ -100,8 +102,10 @@ socket.on("connection", function (client) {
 
     let user = chat.get_user(client.id);
 
-    socket.to(user.frq).emit('update', (user.username+" left the frequency "+user.frq) );
-    chat.remove_user(client.id);
+    if(user){
+      socket.to(user.frq).emit('update', (user.username+" left the frequency "+user.frq) );
+      chat.remove_user(client.id);
+    }
 
   });
 

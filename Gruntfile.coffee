@@ -140,8 +140,8 @@ module.exports = (grunt) ->
     'coffee:joined'
     'haml:all'
     'bower_concat:all'
-    'uglify:all'
-    'jsObfuscate:all'
+    #'uglify:all'
+    #'jsObfuscate:all'
   ]
 
 
