@@ -23,7 +23,7 @@ RUN gem install --no-rdoc --no-ri haml sass
 RUN npm install \
  && npm install --global grunt bower \
  && bower install --allow-root\
- && grunt build \
+ && grunt assets \
  && gem uninstall haml sass rdoc \
  && npm remove -g grunt bower \
  && npm cache clean \
@@ -32,3 +32,7 @@ RUN npm install \
  && rm -rf .sass-cache
 
 CMD [ "npm", "start" ]
+
+# docker run -d -p 3002:3003 --network="kc" -e REDIS_HOST="172.18.0.2" kc
+# docker run -d -p 3003:3003 --network="kc" -e REDIS_HOST="172.18.0.2" kc
+# docker run -d -p 4000:80 --network="kc" -v /Users/avatsaev/DEV/Node/kawachat/nginx/default.conf:/etc/nginx/conf.d/default.conf nginx:1.13.0-alpine

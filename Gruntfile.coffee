@@ -1,13 +1,11 @@
 module.exports = (grunt) ->
 
   grunt.loadNpmTasks 'grunt-bower-concat'
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-sass'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-haml2html'
-  grunt.loadNpmTasks 'js-obfuscator'
   grunt.loadNpmTasks 'grunt-contrib-clean'
 
 
@@ -53,33 +51,6 @@ module.exports = (grunt) ->
           ext: '.min.css'
         ]
 
-    uglify:
-      all:
-        options:
-          mangle: true
-          compress: true
-        files:
-          'public/javascripts/lib.min.js': ['public/javascripts/lib.js']
-          'public/javascripts/bundle.min.js': ['public/javascripts/bundle.js']
-
-    jsObfuscate:
-      all:
-        options:
-          concurrency: 2
-          keepLinefeeds: false
-          keepIndentations: false
-          encodeStrings: true
-          encodeNumbers: true
-          moveStrings: true
-          replaceNames: true
-          variableExclusions: [
-            '^_get_'
-            '^_set_'
-            '^_mtd_'
-          ]
-        files: 'public/javascripts/bundle.min.js': [
-          'public/javascripts/bundle.min.js'
-        ]
 
     watch:
       coffee:
@@ -140,8 +111,6 @@ module.exports = (grunt) ->
     'coffee:joined'
     'haml:all'
     'bower_concat:all'
-    #'uglify:all'
-    #'jsObfuscate:all'
   ]
 
 
